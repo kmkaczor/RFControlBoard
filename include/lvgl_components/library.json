@@ -1,0 +1,19 @@
+{
+    "name": "LVGL C++ Components",
+    "version": "0.1",
+    "keywords": "lvgl, gui, graphics",
+    "description": "LVGL C++ Components",
+    "__repository": {
+        "type": "git",
+        "url": "https://github.com/noidea/noidea.git"
+    },
+    "frameworks": "arduino",
+    "platforms": "teensyduino, ststm32",
+    "build": {
+        "libArchive": false,
+        "includeDir": ".",
+		"_flags": [
+			"-ISource/portable/MemMang"
+		]
+    }
+}
