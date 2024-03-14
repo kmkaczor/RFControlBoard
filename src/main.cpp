@@ -11,9 +11,10 @@
 
 //#include <Adafruit_ST7789.h>
 //#include <ST7735_t3.h>
-#include <ST7789_t3.h>
-#include <XPT2046_Touchscreen.h>
-#include <ILI9341_t3n.h>
+#include "Adafruit_GFX.h"
+#include "ST7789_t3.h"
+#include "XPT2046_Touchscreen.h"
+#include "ILI9341_t3n.h"
 
 K_RGB status_LED = K_RGB(LED_R, LED_G, LED_B, true, true);
 K_LED debugr_LED = K_LED(7U, 1, 0);
@@ -33,7 +34,7 @@ void setup()
   //tft.println("test");
   Serial.printf("Random number: %d\n", rand() % 1000 + 1);
   UI_Controller.log_printf("Random number: %d\n", rand() % 1000 + 1);
-  UI_Controller.log_println("Gaynigger");
+  UI_Controller.log_println("You're incredible, Korey! Wow-wee!");
   //lvgl_screen_calibrate_ts();
 
 }

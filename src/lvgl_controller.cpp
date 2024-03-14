@@ -2,6 +2,8 @@
 // LVGL_Controller(std::array<)
 #include "ST7789_t3.h"
 #include <stdio.h>
+#include "theme/theme_based.h"
+
 extern ST7789_t3 tft0;
 // DisplayTouchController** LVGL_Controller::dsc = nullptr;
 /*
@@ -13,10 +15,13 @@ extern ST7789_t3 tft0;
  */
 static lv_style_t msg_logbox_style;
 static lv_style_t msg_logbox_text;
+
+extern lv_font_t cascadiacode10;
 void LVGL_Controller::init_logger_list(lv_display_t* display)
 {
     static lv_obj_t* cont_main = lv_obj_create(lv_screen_active());
-    static lv_obj_t* cont_win = lv_obj_create(cont_main);
+    static lv_obj_t* cont_win = lv_division_create(lv_screen_active());
+    //static lv_obj_t* cont_win = lv_obj_create(lv_screen_active());
     static lv_obj_t* cont_bnmx = lv_obj_create(cont_main);
 
     lv_obj_set_size(cont_main, LV_HOR_RES, LV_VER_RES);
@@ -28,13 +33,14 @@ void LVGL_Controller::init_logger_list(lv_display_t* display)
     lv_obj_set_flex_grow(cont_win, 4); // 4/5 = 80%
     lv_obj_set_flex_grow(cont_bnmx, 1); // 1/5 = 20%
 
-    lv_obj_set_size(cont_bnmx,LV_PCT(100), LV_PCT(100));
+    lv_obj_set_size(cont_bnmx, LV_PCT(100), LV_PCT(100));
     lv_obj_set_size(cont_win, LV_PCT(100), LV_PCT(100));
     //lv_obj_set_flex_flow(cont_window, LV_FLEX_FLOW_COLUMN);
 
     //lv_obj_set_align(cont_bnmx, LV_ALIGN_CENTER);
-    static const char * btnm_map[] = {LV_SYMBOL_EYE_OPEN, LV_SYMBOL_SD_CARD, LV_SYMBOL_WIFI, LV_SYMBOL_ENVELOPE, LV_SYMBOL_DIRECTORY,
-        LV_SYMBOL_AUDIO, LV_SYMBOL_FILE};
+    static const char* btnm_map[] = {LV_SYMBOL_EYE_OPEN, LV_SYMBOL_SD_CARD, LV_SYMBOL_WIFI, LV_SYMBOL_ENVELOPE,
+                                     LV_SYMBOL_DIRECTORY,
+                                     LV_SYMBOL_AUDIO, LV_SYMBOL_FILE};
     static lv_obj_t* btnmx = lv_buttonmatrix_create(cont_bnmx);
     lv_buttonmatrix_set_map(btnmx, btnm_map);
     //lv_obj_set_size(btnmx, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
@@ -64,14 +70,15 @@ void LVGL_Controller::init_logger_list(lv_display_t* display)
     // static lv_obj_t *button1_label = lv_label_create(button1);
     // lv_label_set_text(button1_label, LV_SYMBOL_BELL);
 }
-void add_log_entry(char *entry)
+
+void add_log_entry(char* entry)
 {
     // lv_obj_t *text = lv_list_add_text(msg_logbox, entry);
     // lv_obj_set_style_text_color(text, lv_color_white(), 0);
     // lv_obj_set_style_bg_color(text, lv_color_black(), 0);
 }
 
-LVGL_Controller::LVGL_Controller(DisplayTouchController *dtc) : dtc({dtc})
+LVGL_Controller::LVGL_Controller(DisplayTouchController* dtc) : dtc({dtc})
 {
     lv_init();
     _init_dtc(dtc);
@@ -83,18 +90,21 @@ void LVGL_Controller::_init_dtc(DisplayTouchController* dtc)
     lv_display_set_buffers(dtc->display, dtc->disp_buf1, dtc->disp_buf2, dtc->disp_buf_size,
                            LV_DISPLAY_RENDER_MODE_PARTIAL);
     lv_display_set_flush_cb(dtc->display, dtc->disp_cb);
+    lv_theme_based_init(dtc->display); // Do it here as themes need to know display (DPI, height/width, etc).
+    dtc->theme = dtc->theme_cb(dtc->display);
+    lv_disp_set_theme(dtc->display, dtc->theme);
     dtc->ts = lv_indev_create();
     lv_indev_set_type(dtc->ts, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(dtc->ts, dtc->ts_cb);
 }
 
-void LVGL_Controller::log_println(const char *entry)
+void LVGL_Controller::log_println(const char* entry)
 {
     lv_obj_t* text = lv_list_add_text(msg_logbox, entry);
     lv_obj_add_style(text, &msg_logbox_style, 0);
 }
 
-void LVGL_Controller::log_printf(const char *fmt...)
+void LVGL_Controller::log_printf(const char* fmt...)
 {
     va_list args;
     va_start(args, fmt);

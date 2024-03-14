@@ -73,13 +73,14 @@
 #define RFC522_RST 30U
 #define LV_USE_THEME_BASED 1
 
+#define MY_THEME theme_based
+
 #include "kled.h"
 #include "lvgl_controller.h"
-void my_disp_flush(lv_display_t *disp, const lv_area_t * area, lv_color_t * color_p);
 //void read_ts_cb(lv_indev_t *touchdev, lv_indev_data_t *data);
 //extern DisplayTouchController::ts_precalibration_data_t<int> ts0_coord;//void logger(String message);
 extern K_RGB status_LED;
 extern K_LED debugr_LED;
 extern K_LED debugp_LED;
-extern LVGL_Controller UI_Controller;
+//extern lv_font_t cascadiacode4bpp;
 #endif

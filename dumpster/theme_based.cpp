@@ -10,7 +10,7 @@
 
 #if LV_USE_THEME_BASED
 
-#include "theme_based.h"
+#include "theme/theme_based.h"
 #include "src/core/lv_global.h"
 
 /*********************
@@ -56,8 +56,8 @@ struct _my_theme_t {
     my_theme_styles_t styles;
     bool inited;
 };
-
-my_theme_t theme_based = {
+typedef struct my_theme_t theme_based_t
+my_theme_t theme_based_t {
     .base = {
         .disp = NULL,
         .font_small = LV_FONT_DEFAULT,
@@ -195,7 +195,7 @@ lv_theme_t * lv_theme_simple_init(lv_display_t * disp)
     //if(!lv_theme_simple_is_inited()) {
     //    theme_def  = lv_malloc_zeroed(sizeof(my_theme_t));
     //}
-    my_theme_t theme_based = {0};
+    static my_theme_t theme_based = {0};
 
 
     _my_theme_t * theme = &theme_based;
@@ -216,12 +216,11 @@ lv_theme_t * lv_theme_simple_init(lv_display_t * disp)
 
     return (lv_theme_t *)theme;
 }
-
-static void theme_apply(lv_theme_t * th, lv_obj_t * obj)
+static void theme_apply(lv_theme_t * theme, lv_obj_t * obj)
 {
-    LV_UNUSED(th);
+    //LV_UNUSED(th);
 
-    my_theme_t * theme = theme_def;
+    //my_theme_t * theme = theme_def;
 
     if(lv_obj_get_parent(obj) == NULL) {
         lv_obj_add_style(obj, &theme->styles.scr, 0);
@@ -395,7 +394,8 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj)
 #endif
 #if LV_USE_LIST
     else if(lv_obj_check_type(obj, &lv_list_class)) {
-        lv_obj_add_style(obj, &theme->styles.light, 0);
+        lv_obj_add_style(obj, &theme->styles.light, 0)
+;
         lv_obj_add_style(obj, &theme->styles.scrollbar, LV_PART_SCROLLBAR);
         return;
     }
